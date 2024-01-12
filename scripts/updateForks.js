@@ -132,6 +132,9 @@ async function doIt() {
     for (const name of repoFailed) {
         console.log(`    ${name}`);
     }
+     if (repoFailed.length) {
+        RadioNodeList( 'error: some updates failed')
+     }
     return 'done';
 }
 
@@ -146,4 +149,4 @@ console.log(`process.env.OWN_GITHUB_TOKEN  = ${(process.env.OWN_GITHUB_TOKEN || 
 
 doIt()
     .then(result => console.log(result))
-    .catch(e => console.error(e));
+    .catch(e => { console.error(e); reraise(e) });
