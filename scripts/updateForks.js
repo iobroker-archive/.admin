@@ -14,6 +14,11 @@ const {
     syncRepository,
 } = require('./common');
 
+const repoFailed = [];
+const repoForked = [];
+const repoSynced = [];
+const repoOK = [];
+
 function getLatestRepo() {
     return getUrl('http://repo.iobroker.live/sources-dist-latest.json');
 }
@@ -68,11 +73,28 @@ async function forkAndSyncRepo( pOwner, pRepository ){
     if ( await isRepository( 'iobroker-archive', repoName)) {
         console.log (`syncing repository iobroker-archive/${repoName} from ${pOwner}/${pRepository}`);
         const result = await syncRepository( 'iobroker-archive', repoName);
-        console.log( result );
+        if (result) {
+            console.log( result );
+            if (result.message.startsWith('This branch is not behind the upstream')) {
+                repoOK.push( repoName );                
+            } else {
+                repoSynced.push( repoName );
+            }
+        } else {
+            console.log( 'syncing failed' );
+            repoFailed.push( repoName );
+        }
     } else {
         console.log (`forking repository ${pOwner}/${pRepository} as iobroker-archive/${repoName}`);
         const result = await forkRepository( pOwner, pRepository, 'iobroker-archive', repoName);    
         console.log( (result && result.id) ? `forking OK (id: ${result.id})` : 'forking failed' );
+        if (result && result.id) {
+            console.log( `forking OK (id: ${result.id})`);
+            repoForked.push( repoName );
+        } else {
+            console.log( 'forking failed' );
+            repoFailed.push( repoName );
+        }
     }
 
 
@@ -92,6 +114,25 @@ async function doIt() {
         //        return 'stopped';
     }
 
+    console.log '\nAdapters without changes');
+    for (const name of repoOK) {
+        console.log(`    ${name}`);
+    }
+
+    console.log '\nAdapters forked in this run');
+    for (const name of repoForked) {
+        console.log(`    ${name}`);
+    }
+    
+    console.log '\nAdapters synced in this run');
+    for (const name of repoSynced) {
+        console.log(`    ${name}`);
+    }
+
+    console.log '\nAdapters without errors at this run');
+    for (const name of repoFailed) {
+        console.log(`    ${name}`);
+    }
     return 'done';
 }
 
