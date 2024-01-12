@@ -114,22 +114,22 @@ async function doIt() {
         //        return 'stopped';
     }
 
-    console.log '\nAdapters without changes');
+    console.log( '\nAdapters without changes');
     for (const name of repoOK) {
         console.log(`    ${name}`);
     }
 
-    console.log '\nAdapters forked in this run');
+    console.log( '\nAdapters forked in this run');
     for (const name of repoForked) {
         console.log(`    ${name}`);
     }
     
-    console.log '\nAdapters synced in this run');
+    console.log( '\nAdapters synced in this run');
     for (const name of repoSynced) {
         console.log(`    ${name}`);
     }
 
-    console.log '\nAdapters without errors at this run');
+    console.log( '\nAdapters without errors at this run');
     for (const name of repoFailed) {
         console.log(`    ${name}`);
     }
