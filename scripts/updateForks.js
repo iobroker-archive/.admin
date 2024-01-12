@@ -114,22 +114,22 @@ async function doIt() {
     }
 
     console.log( '\nAdapters without changes');
-    for (const name of repoOK) {
+    for (const name of repoOK.sort()) {
         console.log(`    ${name}`);
     }
 
     console.log( '\nAdapters forked in this run');
-    for (const name of repoForked) {
+    for (const name of repoForked.sort()) {
         console.log(`    ${name}`);
     }
     
     console.log( '\nAdapters synced in this run');
-    for (const name of repoSynced) {
+    for (const name of repoSynced.sort()) {
         console.log(`    ${name}`);
     }
 
     console.log( '\nAdapters with errors at this run');
-    for (const name of repoFailed) {
+    for (const name of repoFailed.sort()) {
         console.log(`    ${name}`);
     }
      if (repoFailed.length) {
