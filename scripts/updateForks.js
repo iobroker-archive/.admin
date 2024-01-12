@@ -88,7 +88,8 @@ async function doIt() {
         console.log('');
         console.log(`processing ${adapter.adapter}...`);
         await forkAndSyncRepo( adapter.owner, `ioBroker.${adapter.adapter}`);
-//        return 'stopped';
+        console.log('');
+        //        return 'stopped';
     }
 
     return 'done';
