@@ -85,10 +85,10 @@ async function doIt() {
     const adapters = await mergeRepos (latest, stable);
 
     for (const adapter of adapters) {
-        console.log('');
+        console.log('\n');
         console.log(`processing ${adapter.adapter}...`);
         await forkAndSyncRepo( adapter.owner, `ioBroker.${adapter.adapter}`);
-        console.log('');
+        console.log('\n');
         //        return 'stopped';
     }
 
