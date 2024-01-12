@@ -72,7 +72,7 @@ async function forkAndSyncRepo( pOwner, pRepository ){
     } else {
         console.log (`forking repository ${pOwner}/${pRepository} as iobroker-archive/${repoName}`);
         const result = await forkRepository( pOwner, pRepository, 'iobroker-archive', repoName);    
-        console.log( result.id ? `forking OK (id: ${result.id})` : 'forking failed' );
+        console.log( result?.id ? `forking OK (id: ${result.id})` : 'forking failed' );
     }
 
 
