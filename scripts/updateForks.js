@@ -149,4 +149,4 @@ console.log(`process.env.OWN_GITHUB_TOKEN  = ${(process.env.OWN_GITHUB_TOKEN || 
 
 doIt()
     .then(result => console.log(result))
-    .catch(e => { console.error(e); reraise(e) });
+    .catch(e => { console.log(e); reRaise(e) });
