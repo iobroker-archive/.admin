@@ -1,0 +1,26 @@
+name: update all forks
+
+on:
+  workflow_dispatch:
+
+  schedule:
+    # * is a special character in YAML, so you have to quote this string
+    # every day
+    - cron:  '30 0 * * *'
+  
+jobs:
+  update-forks:
+    name: check ready for stable
+    if: |
+      github.repository == 'iobroker-archive/.admin'
+      
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 18
+      - run: npm i
+      - run: npm run updateForks
+        env:
+          OWN_GITHUB_TOKEN: ${{ secrets.OWN_GITHUB_TOKEN }}
