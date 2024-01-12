@@ -10,7 +10,7 @@ on:
   
 jobs:
   update-forks:
-    name: check ready for stable
+    name: update forks
     if: |
       github.repository == 'iobroker-archive/.admin'
       
