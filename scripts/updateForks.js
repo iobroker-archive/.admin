@@ -130,7 +130,7 @@ async function doIt() {
 
     console.log( '\nAdapters with errors at this run');
     for (const name of repoFailed.sort()) {
-        console.log(`    ${name}`);
+        console.log(`    ${name} - see https://github.com/iobroker-archive/${name}`);
     }
      if (repoFailed.length) {
         throw( 'error: some updates failed')
