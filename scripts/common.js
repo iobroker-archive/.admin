@@ -168,7 +168,7 @@ function forkRepository (srcOwner, srcRepo, destOrga, destRepo) {
         {
             'organization': destOrga,
             'name': destRepo,
-            'default_branch_only': true
+            'default_branch_only': false
         },
         {
             headers: {
