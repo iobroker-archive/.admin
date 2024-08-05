@@ -1,6 +1,6 @@
 {
   "devDependencies": {
-    "axios": "^1.7.2"
+    "axios": "^1.7.3"
   },
   "scripts": {
     "updateForks": "node scripts/updateForks.js"
