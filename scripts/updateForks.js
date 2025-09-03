@@ -81,8 +81,14 @@ async function forkAndSyncRepo( pOwner, pRepository ){
                 repoSynced.push( repoName );
             }
         } else {
-            console.log( 'syncing failed' );
-            repoFailed.push( repoName );
+            console.log( 'syncing failed, trying resync' );
+            const result2 = await syncRepository( 'iobroker-archive', repoName, true);
+            if (result2) {
+                console.log( result2 );
+                repoSynced.push( repoName );                
+            } else {
+                repoFailed.push( repoName );
+            }
         }
     } else {
         console.log (`forking repository ${pOwner}/${pRepository} as iobroker-archive/${repoName}`);

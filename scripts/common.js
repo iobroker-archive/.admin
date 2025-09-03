@@ -183,19 +183,22 @@ function forkRepository (srcOwner, srcRepo, destOrga, destRepo) {
         });
 }
 
-async function syncRepository (owner, repository) {
+async function syncRepository (owner, repository, retry) {
     console.log(`Executing gh repo sync ${owner}/${repository} ...`);
-    exec(`gh repo sync ${owner}/${repository}`, (error, stdout, stderr) => {
-        if (error) {
-            console.log(`error: ${error.message}`);
-            return;
-        }
-        if (stderr) {
-            console.log(`stderr: ${stderr}`);
-            return;
-        }
-        stdout && console.log(`stdout: ${stdout}`);
-    });
+    if (retry) {
+        console.log(`RETRY: Executing gh repo sync ${owner}/${repository} ...`);
+        exec(`gh repo sync ${owner}/${repository}`, (error, stdout, stderr) => {
+            if (error) {
+                console.log(`error: ${error.message}`);
+                return;
+            }
+            if (stderr) {
+                console.log(`stderr: ${stderr}`);
+                return;
+            }
+            stdout && console.log(`stdout: ${stdout}`);
+        });
+    }
 
     const result = await getGithub( `https://api.github.com/repos/${owner}/${repository}`);
 //console.log( `https://api.github.com/repos/${owner}/${repository}`);
