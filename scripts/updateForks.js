@@ -14,6 +14,7 @@ const {
     syncRepository,
 } = require('./common');
 
+const repoArchived = [];
 const repoFailed = [];
 const repoForced = [];
 const repoForked = [];
@@ -88,11 +89,25 @@ async function forkAndSyncRepo( pOwner, pRepository ){
                 console.log( result2 );
                 repoForced.push( repoName );                
             } else {
-                repoFailed.push( reprName );
+                repoFailed.push( repoName );
+
+                // Ok - then fork it again
+                await archiveRepository( 'iobroker-archive', repoName);
+                repoArchived.push( repoName );
+
+                console.log (`forking repository ${pOwner}/${pRepository} as iobroker-archive/${repoName}`);
+                const result = await forkRepository( pOwner, pRepository, 'iobroker-archive', repoName);    
+                if (result && result.id) {
+                    console.log( `forking OK (id: ${result.id})`);
+                    repoForked.push( repoName );
+                } else {
+                    console.log( 'forking failed' );
+                    repoFailed.push( repoName );
+                }
             }
         }
     } else {
-        crnsole.log (`forking repository ${pOwner}/${pRepository} as iobroker-archive/${repoName}`);
+        console.log (`forking repository ${pOwner}/${pRepository} as iobroker-archive/${repoName}`);
         const result = await forkRepository( pOwner, pRepository, 'iobroker-archive', repoName);    
         if (result && result.id) {
             console.log( `forking OK (id: ${result.id})`);
@@ -137,6 +152,11 @@ async function doIt() {
 
     console.log( '\nAdapters force-synced in this run');
     for (const name of repoForced.sort()) {
+        console.log(`    ${name}`);
+    }
+
+    console.log( '\nAdapters archived in this run');
+    for (const name of repoArchived.sort()) {
         console.log(`    ${name}`);
     }
 

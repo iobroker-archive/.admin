@@ -183,6 +183,22 @@ function forkRepository (srcOwner, srcRepo, destOrga, destRepo) {
         });
 }
 
+async function archiveRepository (owner, repository) {
+    const cmd = `gh repo rename ${owner}/zzz-${Date.now().toString()}-${repository} --repo ${owner}/${repository} --yes`;
+    console.log(`Executing ${cmd} ...`);
+    exec(`${cmd}`, (error, stdout, stderr) => {
+        if (error) {
+            console.log(`error: ${error.message}`);
+            return;
+        }
+        if (stderr) {
+            console.log(`stderr: ${stderr}`);
+            return;
+        }
+        stdout && console.log(`stdout: ${stdout}`);
+    });
+}
+
 async function syncRepository (owner, repository, retry) {
     if (retry) {
         console.log(`RETRY: Executing gh repo sync ${owner}/${repository} --force ...`);
@@ -267,5 +283,6 @@ module.exports = {
 
     forkRepository,
     isRepository,
+    archiveRepository,
     syncRepository,
 };
