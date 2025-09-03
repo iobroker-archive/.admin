@@ -185,8 +185,8 @@ function forkRepository (srcOwner, srcRepo, destOrga, destRepo) {
 
 async function syncRepository (owner, repository, retry) {
     if (retry) {
-        console.log(`RETRY: Executing gh repo sync ${owner}/${repository} ...`);
-        exec(`gh repo sync ${owner}/${repository}`, (error, stdout, stderr) => {
+        console.log(`RETRY: Executing gh repo sync ${owner}/${repository} --force ...`);
+        exec(`gh repo sync ${owner}/${repository} --force`, (error, stdout, stderr) => {
             if (error) {
                 console.log(`error: ${error.message}`);
                 return;

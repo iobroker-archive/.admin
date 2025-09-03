@@ -15,6 +15,7 @@ const {
 } = require('./common');
 
 const repoFailed = [];
+const repoForced = [];
 const repoForked = [];
 const repoSynced = [];
 const repoOK = [];
@@ -85,13 +86,13 @@ async function forkAndSyncRepo( pOwner, pRepository ){
             const result2 = await syncRepository( 'iobroker-archive', repoName, true);
             if (result2) {
                 console.log( result2 );
-                repoSynced.push( repoName );                
+                repoForced.push( repoName );                
             } else {
-                repoFailed.push( repoName );
+                repoFailed.push( reprName );
             }
         }
     } else {
-        console.log (`forking repository ${pOwner}/${pRepository} as iobroker-archive/${repoName}`);
+        crnsole.log (`forking repository ${pOwner}/${pRepository} as iobroker-archive/${repoName}`);
         const result = await forkRepository( pOwner, pRepository, 'iobroker-archive', repoName);    
         if (result && result.id) {
             console.log( `forking OK (id: ${result.id})`);
@@ -131,6 +132,11 @@ async function doIt() {
     
     console.log( '\nAdapters synced in this run');
     for (const name of repoSynced.sort()) {
+        console.log(`    ${name}`);
+    }
+
+    console.log( '\nAdapters force-synced in this run');
+    for (const name of repoForced.sort()) {
         console.log(`    ${name}`);
     }
 
