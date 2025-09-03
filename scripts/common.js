@@ -184,7 +184,7 @@ function forkRepository (srcOwner, srcRepo, destOrga, destRepo) {
 }
 
 async function archiveRepository (owner, repository) {
-    const cmd = `gh repo rename ${owner}/zzz-${Date.now().toString()}-${repository} --repo ${owner}/${repository} --yes`;
+    const cmd = `gh repo rename zzz-${Date.now().toString()}-${repository} --repo ${owner}/${repository} --yes`;
     console.log(`Executing ${cmd} ...`);
     exec(`${cmd}`, (error, stdout, stderr) => {
         if (error) {
