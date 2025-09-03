@@ -9,6 +9,7 @@ const {
     getGithub,
     getUrl,
 
+    archiveRepository,
     forkRepository,
     isRepository,
     syncRepository,
