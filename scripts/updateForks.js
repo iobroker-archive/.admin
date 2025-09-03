@@ -132,6 +132,11 @@ async function doIt() {
         console.log(`    ${name}`);
     }
 
+    console.log( '\nAdapters archived in this run');
+    for (const name of repoArchived.sort()) {
+        console.log(`    ${name}`);
+    }
+
     console.log( '\nAdapters forked in this run');
     for (const name of repoForked.sort()) {
         console.log(`    ${name}`);
@@ -139,11 +144,6 @@ async function doIt() {
     
     console.log( '\nAdapters synced in this run');
     for (const name of repoSynced.sort()) {
-        console.log(`    ${name}`);
-    }
-
-    console.log( '\nAdapters archived in this run');
-    for (const name of repoArchived.sort()) {
         console.log(`    ${name}`);
     }
 
