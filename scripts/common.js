@@ -189,17 +189,7 @@ async function archiveRepository (owner, repository) {
     execSync(`${cmd}`);
 }
 
-async function syncRepository (owner, repository, retry) {
-    if (retry) {
-        console.log(`RETRY: Executing gh repo sync ${owner}/${repository} --force ...`);
-        try {
-            execSync(`gh auth refresh -s workflow`);
-            execSync(`gh repo sync ${owner}/${repository} --force`);
-        } catch (e) { 
-            console.log(e);
-        }
-    }
-
+async function syncRepository (owner, repository) {
     const result = await getGithub( `https://api.github.com/repos/${owner}/${repository}`);
 //console.log( `https://api.github.com/repos/${owner}/${repository}`);
 //console.log (result.default_branch);

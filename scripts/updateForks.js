@@ -17,7 +17,6 @@ const {
 
 const repoArchived = [];
 const repoFailed = [];
-const repoForced = [];
 const repoForked = [];
 const repoSynced = [];
 const repoOK = [];
@@ -84,27 +83,19 @@ async function forkAndSyncRepo( pOwner, pRepository ){
                 repoSynced.push( repoName );
             }
         } else {
-            console.log( 'syncing failed, trying resync' );
-            const result2 = await syncRepository( 'iobroker-archive', repoName, true);
-            if (result2) {
-                console.log( result2 );
-                repoForced.push( repoName );                
+            console.log( 'syncing failed, trying refork' );
+
+            await archiveRepository( 'iobroker-archive', repoName);
+            repoArchived.push( repoName );
+
+            console.log (`forking repository ${pOwner}/${pRepository} as iobroker-archive/${repoName}`);
+            const result = await forkRepository( pOwner, pRepository, 'iobroker-archive', repoName);    
+            if (result && result.id) {
+                console.log( `forking OK (id: ${result.id})`);
+                repoForked.push( repoName );
             } else {
+                console.log( 'forking failed' );
                 repoFailed.push( repoName );
-
-                // Ok - then fork it again
-                await archiveRepository( 'iobroker-archive', repoName);
-                repoArchived.push( repoName );
-
-                console.log (`forking repository ${pOwner}/${pRepository} as iobroker-archive/${repoName}`);
-                const result = await forkRepository( pOwner, pRepository, 'iobroker-archive', repoName);    
-                if (result && result.id) {
-                    console.log( `forking OK (id: ${result.id})`);
-                    repoForked.push( repoName );
-                } else {
-                    console.log( 'forking failed' );
-                    repoFailed.push( repoName );
-                }
             }
         }
     } else {
@@ -148,11 +139,6 @@ async function doIt() {
     
     console.log( '\nAdapters synced in this run');
     for (const name of repoSynced.sort()) {
-        console.log(`    ${name}`);
-    }
-
-    console.log( '\nAdapters force-synced in this run');
-    for (const name of repoForced.sort()) {
         console.log(`    ${name}`);
     }
 
