@@ -194,7 +194,7 @@ function prepareGhEnv() {
 
 async function archiveRepository (owner, repository) {
     const cmd = `gh repo rename zzz-${Date.now().toString()}-${repository} --repo ${owner}/${repository} --yes`;
-    console.log(`Executing ${cmd} ...`);
+    // console.log(`Executing ${cmd} ...`);
     execSync(`${cmd}`, { env: prepareGhEnv() });
 }
 
