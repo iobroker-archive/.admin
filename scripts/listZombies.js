@@ -95,4 +95,7 @@ console.log(`process.env.OWN_GITHUB_TOKEN  = ${(process.env.OWN_GITHUB_TOKEN || 
 
 doIt()
     .then(result => console.log(`\n${result}`))
-    .catch(e => { console.log(e); throw(e) });
+    .catch(e => { 
+        console.error(e); 
+        process.exit(1);
+    });
