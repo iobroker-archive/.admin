@@ -3,6 +3,14 @@ const { getGithub, isRepository } = require('./common');
 
 const zombieRepos = [];
 
+// Constants
+const DUPLICATE_MARKER = ' 🔴'; // Red circle marker for duplicate zombies
+const ALIGNMENT_SPACES = '   '; // 3 spaces for alignment
+
+// Parse command line arguments
+const args = process.argv.slice(2);
+const cleanupMode = args.includes('--cleanup');
+
 async function getAllRepositories(org) {
     let page = 1;
     let allRepos = [];
@@ -57,36 +65,61 @@ async function processZombieRepos(org) {
     
     console.log(`\nZombie repositories found: ${zombieRepos.length}\n`);
     
-    // Sort by adapter name
-    zombieRepos.sort((a, b) => a.adapterName.localeCompare(b.adapterName));
+    // Sort by adapter name, then by timestamp (newest first)
+    zombieRepos.sort((a, b) => {
+        const nameCompare = a.adapterName.localeCompare(b.adapterName);
+        if (nameCompare !== 0) return nameCompare;
+        return b.timestamp - a.timestamp; // Newer timestamps first
+    });
     
-    // Group by adapter name and output
-    let currentAdapter = null;
-    
+    // Group by adapter name
+    const groupedZombies = {};
     for (const zombie of zombieRepos) {
-        // Check if we're starting a new adapter
-        if (currentAdapter !== zombie.adapterName) {
-            // Add blank line between different adapters (except for the first one)
-            if (currentAdapter !== null) {
-                console.log('');
-            }
-            
-            // Check if non-zombie version exists
-            const nonZombieExists = await isRepository(org, zombie.adapterName);
-            if (!nonZombieExists) {
-                console.log(`⚠️  WARNING: No active repository found for ${zombie.adapterName}`);
-            }
-            
-            currentAdapter = zombie.adapterName;
+        if (!groupedZombies[zombie.adapterName]) {
+            groupedZombies[zombie.adapterName] = [];
+        }
+        groupedZombies[zombie.adapterName].push(zombie);
+    }
+    
+    // Output zombies with markers
+    let isFirstAdapter = true;
+    
+    for (const adapterName of Object.keys(groupedZombies)) {
+        const zombiesForAdapter = groupedZombies[adapterName];
+        
+        // Add blank line between different adapters (except for the first one)
+        if (!isFirstAdapter) {
+            console.log('');
+        }
+        isFirstAdapter = false;
+        
+        // Check if non-zombie version exists
+        const nonZombieExists = await isRepository(org, adapterName);
+        if (!nonZombieExists) {
+            console.log(`⚠️  WARNING: No active repository found for ${adapterName}`);
         }
         
-        // Print the zombie repository info
-        const timestampStr = formatTimestamp(zombie.timestamp);
-        console.log(`${timestampStr} - ${zombie.adapterName} (${zombie.fullName})`);
+        // Print the zombie repositories
+        const hasMultipleZombies = zombiesForAdapter.length > 1;
+        
+        for (let i = 0; i < zombiesForAdapter.length; i++) {
+            const zombie = zombiesForAdapter[i];
+            const isNewest = i === 0; // First in the sorted group is newest
+            const timestampStr = formatTimestamp(zombie.timestamp);
+            
+            // Add marker for older zombies when there are multiple and not in cleanup mode
+            let marker = ALIGNMENT_SPACES;
+            if (hasMultipleZombies && !isNewest && !cleanupMode) {
+                marker = DUPLICATE_MARKER;
+            }
+            
+            console.log(`${timestampStr}${marker} ${zombie.adapterName} (${zombie.fullName})`);
+        }
     }
 }
 
 async function doIt() {
+    console.log(`Cleanup mode: ${cleanupMode ? 'enabled' : 'disabled'}`);
     await processZombieRepos('iobroker-archive');
     return 'done';
 }
