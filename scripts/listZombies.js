@@ -3,6 +3,10 @@ const { getGithub, isRepository } = require('./common');
 
 const zombieRepos = [];
 
+// Constants
+const DUPLICATE_MARKER = ' 🔴'; // Red circle marker for duplicate zombies
+const ALIGNMENT_SPACES = '   '; // 3 spaces for alignment
+
 // Parse command line arguments
 const args = process.argv.slice(2);
 const cleanupMode = args.includes('--cleanup');
@@ -104,9 +108,9 @@ async function processZombieRepos(org) {
             const timestampStr = formatTimestamp(zombie.timestamp);
             
             // Add marker for older zombies when there are multiple and not in cleanup mode
-            let marker = '   '; // 3 spaces for alignment
+            let marker = ALIGNMENT_SPACES;
             if (hasMultipleZombies && !isNewest && !cleanupMode) {
-                marker = ' 🔴'; // Red circle marker with space for alignment
+                marker = DUPLICATE_MARKER;
             }
             
             console.log(`${timestampStr}${marker} ${zombie.adapterName} (${zombie.fullName})`);
