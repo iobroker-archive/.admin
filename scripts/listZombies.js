@@ -117,7 +117,7 @@ async function processZombieRepos(org) {
             if (cleanupMode && hasMultipleZombies && !isNewest) {
                 console.log(`${timestampStr}${ALIGNMENT_SPACES} ${zombie.adapterName} (${zombie.fullName}) - DELETING...`);
                 try {
-                    await deleteRepository('iobroker-archive', zombie.fullName);
+                    await deleteRepository(org, zombie.fullName);
                     console.log(`${timestampStr}${ALIGNMENT_SPACES} ${zombie.adapterName} (${zombie.fullName}) - DELETED ✓`);
                 } catch (error) {
                     console.error(`${timestampStr}${ALIGNMENT_SPACES} ${zombie.adapterName} (${zombie.fullName}) - FAILED TO DELETE: ${error.message}`);
