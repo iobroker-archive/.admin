@@ -1,5 +1,5 @@
 'use strict';
-const { getGithub, isRepository } = require('./common');
+const { getGithub, isRepository, deleteRepository } = require('./common');
 
 const zombieRepos = [];
 
@@ -113,7 +113,18 @@ async function processZombieRepos(org) {
                 marker = DUPLICATE_MARKER;
             }
             
-            console.log(`${timestampStr}${marker} ${zombie.adapterName} (${zombie.fullName})`);
+            // In cleanup mode with multiple zombies, delete older ones
+            if (cleanupMode && hasMultipleZombies && !isNewest) {
+                console.log(`${timestampStr}${ALIGNMENT_SPACES} ${zombie.adapterName} (${zombie.fullName}) - DELETING...`);
+                try {
+                    await deleteRepository(org, zombie.fullName);
+                    console.log(`${timestampStr}${ALIGNMENT_SPACES} ${zombie.adapterName} (${zombie.fullName}) - DELETED ✓`);
+                } catch (error) {
+                    console.error(`${timestampStr}${ALIGNMENT_SPACES} ${zombie.adapterName} (${zombie.fullName}) - FAILED TO DELETE: ${error.message}`);
+                }
+            } else {
+                console.log(`${timestampStr}${marker} ${zombie.adapterName} (${zombie.fullName})`);
+            }
         }
     }
 }
