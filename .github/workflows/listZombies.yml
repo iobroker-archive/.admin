@@ -2,6 +2,12 @@ name: list zombie repositories
 
 on:
   workflow_dispatch:
+    inputs:
+      cleanup:
+        description: 'Enable cleanup mode (removes old zombies)'
+        required: false
+        default: 'false'
+        type: boolean
 
 jobs:
   list-zombies:
@@ -20,7 +26,7 @@ jobs:
         with:
           node-version: 18
       - run: npm i
-      - run: npm run listZombies
+      - run: npm run listZombies -- ${{ github.event.inputs.cleanup == 'true' && '--cleanup' || '' }}
         env:
           OWN_GITHUB_TOKEN: ${{ secrets.OWN_GITHUB_TOKEN }}
           GH_TOKEN: ${{ secrets.OWN_GITHUB_TOKEN }}
