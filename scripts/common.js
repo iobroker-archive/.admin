@@ -186,13 +186,23 @@ function forkRepository (srcOwner, srcRepo, destOrga, destRepo) {
 async function archiveRepository (owner, repository) {
     const cmd = `gh repo rename zzz-${Date.now().toString()}-${repository} --repo ${owner}/${repository} --yes`;
     console.log(`Executing ${cmd} ...`);
-    execSync(`${cmd}`);
+    const env = {
+        ...process.env,
+        GH_TOKEN: process.env.GH_TOKEN || process.env.OWN_GITHUB_TOKEN
+    };
+    delete env.GITHUB_TOKEN;
+    execSync(`${cmd}`, { env });
 }
 
 async function deleteRepository (owner, repository) {
     const cmd = `gh repo delete ${owner}/${repository} --yes`;
     console.log(`Executing ${cmd} ...`);
-    execSync(`${cmd}`);
+    const env = {
+        ...process.env,
+        GH_TOKEN: process.env.GH_TOKEN || process.env.OWN_GITHUB_TOKEN
+    };
+    delete env.GITHUB_TOKEN;
+    execSync(`${cmd}`, { env });
 }
 
 async function syncRepository (owner, repository) {
