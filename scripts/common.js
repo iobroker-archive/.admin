@@ -189,6 +189,12 @@ async function archiveRepository (owner, repository) {
     execSync(`${cmd}`);
 }
 
+async function deleteRepository (owner, repository) {
+    const cmd = `gh repo delete ${owner}/${repository} --yes`;
+    console.log(`Executing ${cmd} ...`);
+    execSync(`${cmd}`);
+}
+
 async function syncRepository (owner, repository) {
     const result = await getGithub( `https://api.github.com/repos/${owner}/${repository}`);
 //console.log( `https://api.github.com/repos/${owner}/${repository}`);
@@ -259,5 +265,6 @@ module.exports = {
     forkRepository,
     isRepository,
     archiveRepository,
+    deleteRepository,
     syncRepository,
 };
