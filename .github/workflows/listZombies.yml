@@ -1,0 +1,26 @@
+name: list zombie repositories
+
+on:
+  workflow_dispatch:
+
+jobs:
+  list-zombies:
+    name: list zombies
+    if: |
+      github.repository == 'iobroker-archive/.admin'
+      
+    runs-on: ubuntu-latest
+    
+    permissions:
+      contents: read
+      
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 18
+      - run: npm i
+      - run: npm run listZombies
+        env:
+          OWN_GITHUB_TOKEN: ${{ secrets.OWN_GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.OWN_GITHUB_TOKEN }}

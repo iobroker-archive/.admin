@@ -3,6 +3,7 @@
     "axios": "^1.12.2"
   },
   "scripts": {
-    "updateForks": "node scripts/updateForks.js"
+    "updateForks": "node scripts/updateForks.js",
+    "listZombies": "node scripts/listZombies.js"
   }
 }
