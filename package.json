@@ -4,6 +4,7 @@
   },
   "scripts": {
     "updateForks": "node scripts/updateForks.js",
-    "listZombies": "node scripts/listZombies.js"
+    "listZombies": "node scripts/listZombies.js",
+    "restoreZombies": "node scripts/restoreZombies.js"
   }
 }

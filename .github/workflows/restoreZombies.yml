@@ -1,0 +1,38 @@
+name: restore zombie repositories
+
+on:
+  workflow_dispatch:
+    inputs:
+      dryrun:
+        description: 'Enable dryrun mode (logs actions without making changes)'
+        required: false
+        default: 'true'
+        type: boolean
+
+jobs:
+  restore-zombies:
+    name: restore zombies
+    if: |
+      github.repository == 'iobroker-archive/.admin'
+      
+    runs-on: ubuntu-latest
+    
+    permissions:
+      contents: read
+      
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 18
+      - run: npm i
+      - name: Restore zombie repositories
+        run: |
+          if [ "${{ github.event.inputs.dryrun }}" = "true" ]; then
+            npm run restoreZombies -- --dryrun
+          else
+            npm run restoreZombies
+          fi
+        env:
+          OWN_GITHUB_TOKEN: ${{ secrets.OWN_GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.OWN_GITHUB_TOKEN }}
