@@ -276,4 +276,5 @@ module.exports = {
     archiveRepository,
     deleteRepository,
     syncRepository,
+    prepareGhEnv,
 };
